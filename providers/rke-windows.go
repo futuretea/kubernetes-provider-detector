@@ -9,7 +9,15 @@ import (
 
 const RKE_WINDOWS = "rke.windows"
 
-func IsRKEWindows(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
+var _ Provider = &RKEWindowsProvider{}
+
+type RKEWindowsProvider struct{}
+
+func (p *RKEWindowsProvider) GetName() string {
+	return RKE_WINDOWS
+}
+
+func (p *RKEWindowsProvider) Detect(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
 	// if there are windows nodes
 	windowsNodes, err := k8sClient.CoreV1().Nodes().List(ctx, metav1.ListOptions{
 		Limit:         1,

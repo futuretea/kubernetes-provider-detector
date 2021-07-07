@@ -9,7 +9,15 @@ import (
 
 const AKS = "aks"
 
-func IsAKS(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
+var _ Provider = &AKSProvider{}
+
+type AKSProvider struct{}
+
+func (p *AKSProvider) GetName() string {
+	return AKS
+}
+
+func (p *AKSProvider) Detect(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
 	// Look for nodes that have an AKS specific label
 	listOpts := metav1.ListOptions{
 		LabelSelector: "kubernetes.azure.com/cluster",

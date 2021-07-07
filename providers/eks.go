@@ -9,7 +9,15 @@ import (
 
 const EKS = "eks"
 
-func IsEKS(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
+var _ Provider = &EKSProvider{}
+
+type EKSProvider struct{}
+
+func (p *EKSProvider) GetName() string {
+	return EKS
+}
+
+func (p *EKSProvider) Detect(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
 	v, err := k8sClient.Discovery().ServerVersion()
 	if err != nil {
 		return false, err

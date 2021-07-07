@@ -9,7 +9,15 @@ import (
 
 const GKE = "gke"
 
-func IsGKE(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
+var _ Provider = &GKEProvider{}
+
+type GKEProvider struct{}
+
+func (p *GKEProvider) GetName() string {
+	return GKE
+}
+
+func (p *GKEProvider) Detect(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
 	v, err := k8sClient.Discovery().ServerVersion()
 	if err != nil {
 		return false, err

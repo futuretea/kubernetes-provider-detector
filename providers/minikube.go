@@ -10,7 +10,15 @@ import (
 
 const Minikube = "minikube"
 
-func IsMinikube(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
+var _ Provider = &MinikubeProvider{}
+
+type MinikubeProvider struct{}
+
+func (p *MinikubeProvider) GetName() string {
+	return Minikube
+}
+
+func (p *MinikubeProvider) Detect(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
 	nodes, err := k8sClient.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return false, err

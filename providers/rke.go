@@ -9,7 +9,15 @@ import (
 
 const RKE = "rke"
 
-func IsRKE(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
+var _ Provider = &RKEProvider{}
+
+type RKEProvider struct{}
+
+func (p *RKEProvider) GetName() string {
+	return RKE
+}
+
+func (p *RKEProvider) Detect(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
 	// if there are windows nodes then this should not be counted as rke.linux
 	windowsNodes, err := k8sClient.CoreV1().Nodes().List(ctx, metav1.ListOptions{
 		Limit:         1,

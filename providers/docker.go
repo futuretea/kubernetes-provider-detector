@@ -9,7 +9,15 @@ import (
 
 const Docker = "docker"
 
-func IsDocker(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
+var _ Provider = &DockerProvider{}
+
+type DockerProvider struct{}
+
+func (p *DockerProvider) GetName() string {
+	return Docker
+}
+
+func (p *DockerProvider) Detect(ctx context.Context, k8sClient kubernetes.Interface) (bool, error) {
 	nodes, err := k8sClient.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return false, err
